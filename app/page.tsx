@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 
 export default function Home() {
@@ -11,6 +12,55 @@ export default function Home() {
   const workExperienceRef = useRef<HTMLElement>(null);
   const [timelineProgress, setTimelineProgress] = useState(0);
   const [hoveredBox, setHoveredBox] = useState<number | null>(null);
+  const [displayedText1, setDisplayedText1] = useState("");
+  const [displayedText2, setDisplayedText2] = useState("");
+  const [isTyping, setIsTyping] = useState(true);
+  const [language, setLanguage] = useState<"NL" | "EN">("NL");
+
+  const text1 = "BOR KLESSENS";
+  const text2 = "FRONTEND DEVELOPER";
+
+  // Typewriter animation effect
+  useEffect(() => {
+    let index1 = 0;
+    let index2 = 0;
+    let timeout1: NodeJS.Timeout;
+    let timeout2: NodeJS.Timeout;
+
+    const typeText1 = () => {
+      if (index1 < text1.length) {
+        setDisplayedText1(text1.substring(0, index1 + 1));
+        index1++;
+        timeout1 = setTimeout(typeText1, 60); // Faster typing speed
+      } else {
+        // Start typing second text after a short delay
+        setTimeout(() => {
+          typeText2();
+        }, 300);
+      }
+    };
+
+    const typeText2 = () => {
+      if (index2 < text2.length) {
+        setDisplayedText2(text2.substring(0, index2 + 1));
+        index2++;
+        timeout2 = setTimeout(typeText2, 50); // Faster for second line
+      } else {
+        setIsTyping(false);
+      }
+    };
+
+    // Start typing after a brief delay
+    const startDelay = setTimeout(() => {
+      typeText1();
+    }, 300);
+
+    return () => {
+      clearTimeout(timeout1);
+      clearTimeout(timeout2);
+      clearTimeout(startDelay);
+    };
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -149,28 +199,48 @@ export default function Home() {
         }`}
       >
         <div className="w-full py-4 pl-4 md:pl-8 lg:pl-32 pr-4 md:pr-8 lg:pr-32 flex items-center justify-between">
-          <div className="text-2xl md:text-3xl font-bold font-kanit">BOR KLESSENS</div>
+          <Link href="/" className="text-2xl md:text-3xl font-bold font-kanit hover:text-purple-400 transition-colors">BOR KLESSENS</Link>
           <nav className="absolute left-1/2 transform -translate-x-1/2 hidden md:flex gap-8 font-kanit text-lg">
-            <a href="#about" className="hover:text-purple-400 transition-all duration-300 hover:scale-110 hover:drop-shadow-[0_0_10px_rgba(168,85,247,0.8)]">About</a>
+            <Link href="/about" className="hover:text-purple-400 transition-all duration-300 hover:scale-110 hover:drop-shadow-[0_0_10px_rgba(168,85,247,0.8)]">About</Link>
             <a href="#work" className="hover:text-purple-400 transition-all duration-300 hover:scale-110 hover:drop-shadow-[0_0_10px_rgba(168,85,247,0.8)]">Work</a>
             <a href="#skills" className="relative px-3 py-1 rounded-full border-2 border-blue-500 text-blue-400 hover:scale-110 transition-all duration-300 hover:shadow-[0_0_20px_rgba(59,130,246,0.8)]">Skills</a>
             <a href="#contact" className="hover:text-purple-400 transition-all duration-300 hover:scale-110 hover:drop-shadow-[0_0_10px_rgba(168,85,247,0.8)]">Contact</a>
           </nav>
-          <div className="text-2xl md:text-3xl font-bold font-kanit">
-            NL / <span className="text-purple-400">EN</span>
+          <div className="flex items-center gap-2 text-2xl md:text-3xl font-bold font-kanit">
+            <button
+              onClick={() => setLanguage("NL")}
+              className={`transition-all duration-300 hover:scale-110 ${
+                language === "NL"
+                  ? "text-purple-400 drop-shadow-[0_0_15px_rgba(168,85,247,0.8)] underline decoration-purple-400 decoration-2 underline-offset-4"
+                  : "text-white hover:text-purple-300"
+              }`}
+            >
+              NL
+            </button>
+            <span className="text-gray-400">/</span>
+            <button
+              onClick={() => setLanguage("EN")}
+              className={`transition-all duration-300 hover:scale-110 ${
+                language === "EN"
+                  ? "text-purple-400 drop-shadow-[0_0_15px_rgba(168,85,247,0.8)] underline decoration-purple-400 decoration-2 underline-offset-4"
+                  : "text-white hover:text-purple-300"
+              }`}
+            >
+              EN
+            </button>
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center">
+      <section className="relative min-h-screen flex items-center justify-center overflow-x-hidden w-full">
         {/* Hero Image Background */}
-        <div className="absolute inset-0 z-0 overflow-hidden">
+        <div className="absolute inset-0 z-0 w-full h-full hero-image-container">
         <Image
-            src="/heroimg.png"
+            src="/heroimg_quality.png"
             alt="Hero background"
             fill
-            className="object-contain object-left-top"
+            className="object-cover w-full h-full"
           priority
             quality={100}
             unoptimized
@@ -208,14 +278,24 @@ export default function Home() {
             {/* Left: Text Content - takes 2 columns on desktop */}
             <div className="md:col-span-2 space-y-6 text-left">
               <h1 className="text-5xl md:text-6xl lg:text-7xl leading-tight font-kanit" style={{ animation: 'float 6s ease-in-out infinite' }}>
-                <span className="text-white font-light drop-shadow-[0_0_20px_rgba(168,85,247,0.5)]">BOR KLESSENS</span>
+                <span className="text-white font-light drop-shadow-[0_0_20px_rgba(168,85,247,0.5)]">
+                  {displayedText1}
+                  {isTyping && displayedText1.length < text1.length && (
+                    <span className="inline-block w-1 h-[1em] bg-purple-400 ml-1 animate-pulse">|</span>
+                  )}
+                </span>
                 <br />
-                <span className="font-extrabold bg-gradient-to-r from-[#A8A6E5] to-[#5043A9] bg-clip-text text-transparent" style={{ animation: 'text-glow 3s ease-in-out infinite' }}>FRONTEND DEVELOPER</span>
+                <span className="font-extrabold bg-gradient-to-r from-[#A8A6E5] to-[#5043A9] bg-clip-text text-transparent" style={{ animation: 'text-glow 3s ease-in-out infinite' }}>
+                  {displayedText2}
+                  {isTyping && displayedText1.length === text1.length && displayedText2.length < text2.length && (
+                    <span className="inline-block w-1 h-[1em] bg-purple-400 ml-1 animate-pulse">|</span>
+                  )}
+                </span>
           </h1>
-              <p className="text-lg leading-relaxed text-gray-200 max-w-3xl font-jetbrains-mono">
+              <p className={`text-lg leading-relaxed text-gray-200 max-w-3xl font-jetbrains-mono transition-opacity duration-500 ${isTyping ? 'opacity-0' : 'opacity-100'}`}>
                 In the radiant cradle of Elysium, where silken winds whisper through crystalline groves, the architects of light weave dreams into marble. Each dawn unfurls like a tapestry of gold.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 pt-4">
+              <div className={`flex flex-col sm:flex-row gap-4 pt-4 transition-opacity duration-500 ${isTyping ? 'opacity-0' : 'opacity-100'}`}>
                 <button className="px-8 py-4 bg-purple-600 hover:bg-purple-700 rounded-full font-semibold transition-all duration-300 shadow-lg shadow-purple-500/30 font-jetbrains-mono hover:scale-110 hover:shadow-[0_0_30px_rgba(168,85,247,0.8)]">
                   See more
                 </button>
@@ -627,7 +707,7 @@ export default function Home() {
           <div>
             <h4 className="text-lg md:text-xl font-bold mb-4 font-kanit">Navigation</h4>
             <ul className="space-y-2">
-              <li><a href="#about" className="text-gray-400 hover:text-white transition-all duration-300 text-sm md:text-base font-jetbrains-mono hover:scale-110 inline-block hover:drop-shadow-[0_0_10px_rgba(168,85,247,0.8)]">About</a></li>
+              <li><Link href="/about" className="text-gray-400 hover:text-white transition-all duration-300 text-sm md:text-base font-jetbrains-mono hover:scale-110 inline-block hover:drop-shadow-[0_0_10px_rgba(168,85,247,0.8)]">About</Link></li>
               <li><a href="#work" className="text-gray-400 hover:text-white transition-all duration-300 text-sm md:text-base font-jetbrains-mono hover:scale-110 inline-block hover:drop-shadow-[0_0_10px_rgba(168,85,247,0.8)]">Work</a></li>
               <li><a href="#skills" className="text-gray-400 hover:text-white transition-all duration-300 text-sm md:text-base font-jetbrains-mono hover:scale-110 inline-block hover:drop-shadow-[0_0_10px_rgba(168,85,247,0.8)]">Skills</a></li>
               <li><a href="#contact" className="text-gray-400 hover:text-white transition-all duration-300 text-sm md:text-base font-jetbrains-mono hover:scale-110 inline-block hover:drop-shadow-[0_0_10px_rgba(168,85,247,0.8)]">Contact</a></li>
