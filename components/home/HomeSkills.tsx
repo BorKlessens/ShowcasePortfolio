@@ -4,7 +4,7 @@ import Image from "next/image";
 import { RefObject } from "react";
 
 interface HomeSkillsProps {
-  skillsRef: RefObject<HTMLElement>;
+  skillsRef: RefObject<HTMLElement | null>;
   isSkillsVisible: boolean;
 }
 
@@ -89,5 +89,6 @@ export default function HomeSkills({ skillsRef, isSkillsVisible }: HomeSkillsPro
     </section>
   );
 }
+
 
 

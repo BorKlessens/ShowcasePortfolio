@@ -107,3 +107,4 @@ export default function HomeHero({ displayedText1, displayedText2, isTyping, tex
 }
 
 
+
