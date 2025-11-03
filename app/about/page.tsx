@@ -3,6 +3,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import Header from "@/components/shared/Header";
+import Footer from "@/components/shared/Footer";
+import BackgroundParticles from "@/components/shared/BackgroundParticles";
 
 export default function AboutPage() {
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
@@ -77,77 +80,8 @@ export default function AboutPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-purple-950 to-black text-white overflow-x-hidden relative">
-      {/* Animated Background Particles */}
-      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-        {[...Array(15)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1 h-1 bg-purple-400 rounded-full opacity-40"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animation: `twinkle ${3 + Math.random() * 4}s ease-in-out infinite`,
-              animationDelay: `${Math.random() * 3}s`,
-            }}
-          />
-        ))}
-        {[...Array(3)].map((_, i) => (
-          <div
-            key={`star-${i}`}
-            className="absolute w-1 h-1 bg-white rounded-full opacity-50"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animation: `particle-float ${20 + Math.random() * 15}s linear infinite`,
-              animationDelay: `${Math.random() * 8}s`,
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Header */}
-      <header 
-        className={`fixed top-0 left-0 right-0 z-50 transition-transform duration-300 ${
-          isHeaderVisible ? 'translate-y-0' : '-translate-y-full'
-        }`}
-      >
-        <div className="w-full py-4 pl-4 md:pl-8 lg:pl-32 pr-4 md:pr-8 lg:pr-32 flex items-center justify-between">
-          <Link href="/" className="text-2xl md:text-3xl font-bold font-kanit hover:text-purple-400 transition-colors">
-            BOR KLESSENS
-          </Link>
-          <nav className="absolute left-1/2 transform -translate-x-1/2 hidden md:flex gap-8 font-kanit text-lg">
-            <Link href="/about" className="relative px-3 py-1 rounded-full border-2 border-purple-500 text-purple-400 hover:scale-110 transition-all duration-300 hover:shadow-[0_0_20px_rgba(168,85,247,0.8)]">
-              About
-            </Link>
-            <Link href="/#work" className="hover:text-purple-400 transition-all duration-300 hover:scale-110 hover:drop-shadow-[0_0_10px_rgba(168,85,247,0.8)]">Work</Link>
-            <Link href="/#skills" className="hover:text-purple-400 transition-all duration-300 hover:scale-110 hover:drop-shadow-[0_0_10px_rgba(168,85,247,0.8)]">Skills</Link>
-            <Link href="/#contact" className="hover:text-purple-400 transition-all duration-300 hover:scale-110 hover:drop-shadow-[0_0_10px_rgba(168,85,247,0.8)]">Contact</Link>
-          </nav>
-          <div className="flex items-center gap-2 text-2xl md:text-3xl font-bold font-kanit">
-            <button
-              onClick={() => setLanguage("NL")}
-              className={`transition-all duration-300 hover:scale-110 ${
-                language === "NL"
-                  ? "text-purple-400 drop-shadow-[0_0_15px_rgba(168,85,247,0.8)] underline decoration-purple-400 decoration-2 underline-offset-4"
-                  : "text-white hover:text-purple-300"
-              }`}
-            >
-              NL
-            </button>
-            <span className="text-gray-400">/</span>
-            <button
-              onClick={() => setLanguage("EN")}
-              className={`transition-all duration-300 hover:scale-110 ${
-                language === "EN"
-                  ? "text-purple-400 drop-shadow-[0_0_15px_rgba(168,85,247,0.8)] underline decoration-purple-400 decoration-2 underline-offset-4"
-                  : "text-white hover:text-purple-300"
-              }`}
-            >
-              EN
-            </button>
-          </div>
-        </div>
-      </header>
+      <BackgroundParticles particleCount={15} starCount={3} />
+      <Header isHeaderVisible={isHeaderVisible} activePage="about" language={language} setLanguage={setLanguage} />
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-x-hidden w-full">
@@ -210,7 +144,7 @@ export default function AboutPage() {
               </h1>
               <div className="pt-6 md:pt-8">
                 <button className="px-10 py-5 md:px-12 md:py-6 bg-purple-700 hover:bg-purple-800 rounded-full font-semibold text-lg md:text-xl transition-all duration-300 shadow-lg shadow-purple-500/30 font-jetbrains-mono hover:scale-110 hover:shadow-[0_0_30px_rgba(168,85,247,0.8)] text-white">
-                  MY PROJECTS
+                  <Link href="/projects">MY PROJECTS</Link>
                 </button>
               </div>
             </div>
@@ -386,8 +320,7 @@ export default function AboutPage() {
             <h4 className="text-lg md:text-xl font-bold mb-4 font-kanit">Navigation</h4>
             <ul className="space-y-2">
               <li><Link href="/about" className="text-gray-400 hover:text-white transition-all duration-300 text-sm md:text-base font-jetbrains-mono hover:scale-110 inline-block hover:drop-shadow-[0_0_10px_rgba(168,85,247,0.8)]">About</Link></li>
-              <li><Link href="/#work" className="text-gray-400 hover:text-white transition-all duration-300 text-sm md:text-base font-jetbrains-mono hover:scale-110 inline-block hover:drop-shadow-[0_0_10px_rgba(168,85,247,0.8)]">Work</Link></li>
-              <li><Link href="/#skills" className="text-gray-400 hover:text-white transition-all duration-300 text-sm md:text-base font-jetbrains-mono hover:scale-110 inline-block hover:drop-shadow-[0_0_10px_rgba(168,85,247,0.8)]">Skills</Link></li>
+              <li><Link href="/projects" className="text-gray-400 hover:text-white transition-all duration-300 text-sm md:text-base font-jetbrains-mono hover:scale-110 inline-block hover:drop-shadow-[0_0_10px_rgba(168,85,247,0.8)]">Projects</Link></li>
               <li><Link href="/#contact" className="text-gray-400 hover:text-white transition-all duration-300 text-sm md:text-base font-jetbrains-mono hover:scale-110 inline-block hover:drop-shadow-[0_0_10px_rgba(168,85,247,0.8)]">Contact</Link></li>
             </ul>
           </div>
